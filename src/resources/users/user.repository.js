@@ -1,10 +1,11 @@
 const uuid = require('uuid');
 
 const User = require('./user.model');
+const db = require('../../db');
 
 class UserRepository {
   constructor() {
-    this._users = new Map();
+    this._users = db.users;
   }
 
   getAll() {
@@ -17,10 +18,9 @@ class UserRepository {
 
   add(user) {
     const id = uuid.v4();
-    const obj = { id, ...user };
-    const { password, ...rest } = obj;
-    this._users.set(id, new User(obj));
-    return rest;
+    const instance = new User({ ...user, id });
+    this._users.set(instance.id, instance);
+    return User.toResponse(instance);
   }
 
   get(id) {

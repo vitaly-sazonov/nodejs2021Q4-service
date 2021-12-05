@@ -2,22 +2,8 @@
 
 const service = require('./user.service');
 
-// User (/users route)
-// GET /users - get all users (remove password from response)
-// GET /users/:userId - get the user by id (ex. “/users/123”) (remove password from response)
-// POST /users - create user
-// PUT /users/:userId - update user
-// DELETE /users/:userId - delete user
-
 module.exports = async (fastify) => {
-  fastify.get('/', {
-    schema: {
-      response: {
-        200: {
-          type: 'array',
-        },
-      },
-    },
+  fastify.get('/users', {
     handler: async (_, reply) => {
       reply.code(200);
       const users = await service.getAll();
@@ -25,14 +11,7 @@ module.exports = async (fastify) => {
     },
   });
 
-  fastify.get('/:id', {
-    // schema: {
-    //   response: {
-    //     200: {
-    //       type: 'array',
-    //     },
-    //   },
-    // },
+  fastify.get('/users/:id', {
     handler: async (req, reply) => {
       const { params } = req;
       reply.code(200);
@@ -41,16 +20,7 @@ module.exports = async (fastify) => {
     },
   });
 
-  fastify.post('/', {
-    // schema: {
-    //   response: {
-    //     type: 'object',
-
-    //     201: {
-    //       type: 'array',
-    //     },
-    //   },
-    // },
+  fastify.post('/users', {
     handler: async (req, reply) => {
       reply.code(201);
       const user = await service.add(req.body);
@@ -58,14 +28,7 @@ module.exports = async (fastify) => {
     },
   });
 
-  fastify.put('/:id', {
-    // schema: {
-    //   response: {
-    //     200: {
-    //       type: 'array',
-    //     },
-    //   },
-    // },
+  fastify.put('/users/:id', {
     handler: async (req, reply) => {
       const {
         params: { id },
@@ -77,14 +40,7 @@ module.exports = async (fastify) => {
     },
   });
 
-  fastify.delete('/:id', {
-    // schema: {
-    //   response: {
-    //     200: {
-    //       type: 'array',
-    //     },
-    //   },
-    // },
+  fastify.delete('/users/:id', {
     handler: async (req, reply) => {
       const { params } = req;
       await service.remove(params.id);
