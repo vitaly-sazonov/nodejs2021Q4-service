@@ -1,5 +1,3 @@
-'use strict';
-
 const wrapError = require('../../common/wrapError');
 const service = require('./tasks.service');
 

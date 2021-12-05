@@ -1,5 +1,3 @@
-'use strict';
-
 const service = require('./user.service');
 
 module.exports = async (fastify) => {
