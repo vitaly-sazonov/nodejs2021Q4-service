@@ -18,6 +18,7 @@
   },
   "extends": ["eslint:recommended", "plugin:node/recommended", "airbnb-base", "prettier"],
   "rules": {
+    "no-explicit-any": "on",
     "import/extensions": "off",
     "linebreak-style": "off",
     "node/no-unsupported-features/es-syntax": "off",
