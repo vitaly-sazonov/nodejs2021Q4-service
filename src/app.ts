@@ -1,7 +1,8 @@
-const path = require('path');
-const AutoLoad = require('fastify-autoload');
+import path from 'path';
+import AutoLoad from 'fastify-autoload';
+import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 
-module.exports = async (fastify, opts) => {
+export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Promise<FastifyInstance> => {
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'resources/users'),
     maxDepth: 3,
@@ -28,4 +29,6 @@ module.exports = async (fastify, opts) => {
       ...opts,
     },
   });
+
+  return fastify;
 };
