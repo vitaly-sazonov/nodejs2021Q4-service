@@ -1,5 +1,5 @@
-const BoardsRepo = require('./board.repository');
-const TasksRepo = require('../tasks/tasks.repository');
+import BoardsRepo from './board.repository';
+import TasksRepo from '../tasks/tasks.repository';
 
 const boardRepo = new BoardsRepo();
 const taskRepo = new TasksRepo();
@@ -13,4 +13,4 @@ const remove = (id) => {
   boardRepo.remove(id);
 };
 
-module.exports = { getAll, add, getBoard, update, remove };
+export default { getAll, add, getBoard, update, remove };

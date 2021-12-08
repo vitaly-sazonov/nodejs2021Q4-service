@@ -1,9 +1,6 @@
-const uuid = require('uuid');
-
-const db = require('../../db');
-
-const Board = require('./board.model');
-//! const ColumnRepository = require('../columns/column.repository');
+import { randomUUID } from 'crypto';
+import db from '../../db';
+import Board from './board.model';
 
 class BoardRepository {
   constructor() {
@@ -19,7 +16,7 @@ class BoardRepository {
   }
 
   add(board) {
-    const id = uuid.v4();
+    const id = randomUUID();
 
     const instance = new Board({ ...board, id });
     this._boards.set(instance.id, instance);
@@ -47,4 +44,4 @@ class BoardRepository {
   }
 }
 
-module.exports = BoardRepository;
+export default BoardRepository;

@@ -1,10 +1,7 @@
+import wrapError from '../../common/wrapError';
+import service from './board.service';
 
-
-const wrapError = require('../../common/wrapError');
-
-const service = require('./board.service');
-
-module.exports = async (fastify) => {
+export default async (fastify) => {
   fastify.get('/boards', {
     handler: async (_, reply) => {
       reply.code(200);
