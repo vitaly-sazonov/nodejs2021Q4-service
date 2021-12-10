@@ -1,45 +1,78 @@
 import { randomUUID } from 'crypto';
 import db from '../../db';
-import Board from './board.model';
+import Board, { BoardType } from './board.model';
+import Column from '../columns/column.model';
+import { ResourceError } from '../../common/errors';
 
+/**
+ * Class BoardRepository for accessing Board data
+ */
 class BoardRepository {
+  /** @internal _boards - reference to simulate base */
+  _boards;
+
+  /**
+   * Constructor class BoardRepository
+   * @returns Instance class BoardRepository
+   */
   constructor() {
     this._boards = db.boards;
   }
 
-  getAll() {
-    const arrayUsers = Array.from(this._boards.values());
-    return arrayUsers.map((user) => {
-      const { password, ...rest } = user;
-      return { ...rest };
-    });
+  /**
+   * Get all boards from database
+   * @returns array of objects data the board
+   */
+  getAll(): BoardType[] {
+    return Array.from(this._boards.values());
   }
 
-  add(board) {
+  /**
+   * Add board in db
+   * @param board - data board \{title, columns\}
+   * @returns object board \{id, title, columns\}
+   */
+  add(board: BoardType): BoardType {
     const id = randomUUID();
+    const { columns, ...rest } = board;
 
-    const instance = new Board({ ...board, id });
+    const instance = new Board({ ...rest, id, columns: columns.map((column) => new Column(column)) });
     this._boards.set(instance.id, instance);
     return Board.toResponse(instance);
   }
 
-  get(id) {
+  /**
+   * Get board record by id from db
+   * @param id - board record uuid
+   * @returns object board \{id, title, columns\}
+   */
+  get(id: UUIDType): BoardType {
     if (!this._boards.has(id)) {
-      throw new Error('Board was not founded!');
+      throw new ResourceError('board', 404, 'Board was not founded!');
     }
-    const user = this._boards.get(id);
-    return user;
+    return this._boards.get(id) as BoardType;
   }
 
-  update(id, body) {
+  /**
+   * Update board record by id from db
+   * @param id - board record uuid
+   * @param body - new board data of record
+   * @returns object board \{id, title, columns\}
+   */
+  update(id: UUIDType, body: BoardType): BoardType {
     if (!this._boards.has(id)) {
-      throw new Error('Board was not founded!');
+      throw new ResourceError('board', 404, 'Board was not founded!');
     }
-    const user = this._boards.set(id, body);
-    return user;
+    this._boards.set(id, body);
+    return body;
   }
 
-  remove(id) {
+  /**
+   * Delete board record by id from db
+   * @param id - board record uuid
+   * @returns returns boolean type of query result
+   */
+  remove(id: UUIDType): boolean {
     return this._boards.delete(id);
   }
 }
