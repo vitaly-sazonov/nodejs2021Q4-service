@@ -1,6 +1,7 @@
 import path from 'path';
 import AutoLoad from 'fastify-autoload';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
+import { ResourceError } from './common/errors';
 
 export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Promise<FastifyInstance> => {
   fastify.register(AutoLoad, {
@@ -28,6 +29,14 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
     options: {
       ...opts,
     },
+  });
+
+  fastify.addHook('onError', async (_, reply, error) => {
+    if (error instanceof ResourceError) {
+      reply.code(error.code).send(error.message);
+      return;
+    }
+    throw error;
   });
 
   return fastify;
