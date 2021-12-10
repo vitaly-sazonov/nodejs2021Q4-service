@@ -1,48 +1,58 @@
-const service = require('./user.service');
+import { FastifyInstance } from 'fastify';
+import { UserType } from './user.model';
 
-module.exports = async (fastify) => {
+import service from './user.service';
+
+/**
+ * Iterface for an HTTP Request
+ * @param id - user uuid
+ */
+interface IParams {
+  id: UUIDType;
+}
+
+export default async (fastify: FastifyInstance) => {
   fastify.get('/users', {
     handler: async (_, reply) => {
       reply.code(200);
-      const users = await service.getAll();
-      return users;
+      return service.getAll();
     },
   });
 
-  fastify.get('/users/:id', {
+  fastify.get<{ Params: IParams }>('/users/:id', {
     handler: async (req, reply) => {
-      const { params } = req;
+      const { id } = req.params;
       reply.code(200);
-      const user = await service.getUser(params.id);
-      return user;
+      return service.getUser(id);
     },
   });
 
-  fastify.post('/users', {
+  fastify.post<{ Body: UserType }>('/users', {
     handler: async (req, reply) => {
+      const { body } = req;
       reply.code(201);
-      const user = await service.add(req.body);
-      return user;
+      return service.add(body);
     },
   });
 
-  fastify.put('/users/:id', {
+  fastify.put<{ Params: IParams; Body: UserType }>('/users/:id', {
     handler: async (req, reply) => {
       const {
         params: { id },
         body,
       } = req;
       reply.code(200);
-      const renewed = await service.update(id, body);
-      return renewed;
+      return service.update(id, body);
     },
   });
 
-  fastify.delete('/users/:id', {
+  fastify.delete<{ Params: IParams }>('/users/:id', {
     handler: async (req, reply) => {
-      const { params } = req;
-      await service.remove(params.id);
-      reply.code(204);
+      const {
+        params: { id },
+      } = req;
+      service.remove(id);
+      reply.code(204).send();
     },
   });
 };
