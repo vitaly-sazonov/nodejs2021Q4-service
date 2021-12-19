@@ -29,7 +29,7 @@ const getBoard = (id: UUIDType) => boardRepo.get(id);
  * Update board record by id from db via BoardRepository
  * @param id - board uuid
  * @param body - new board data of record
- * @returns object user \{id, title, columns\}
+ * @returns object board \{id, title, columns\}
  */
 const update = (id: UUIDType, body: BoardType) => boardRepo.update(id, body);
 

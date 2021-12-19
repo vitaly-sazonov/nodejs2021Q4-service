@@ -5,7 +5,7 @@ import service from './board.service';
 
 /**
  * Iterface for an HTTP Request
- * @param id - user uuid
+ * @param id - board uuid
  */
 interface IParams {
   id: UUIDType;

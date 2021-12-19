@@ -2,6 +2,10 @@ import UserType from './resources/users/user.model';
 import BoardType from './resources/boards/board.model';
 import TaskType from './resources/tasks/tasks.model';
 
+/**
+ * Imitation database
+ * @returns Object with Maps \{ users, boards, tasks\}
+ */
 const db = {
   users: new Map<UUIDType, UserType>(),
   boards: new Map<UUIDType, BoardType>(),
