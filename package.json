@@ -9,10 +9,9 @@
   "description": "REST service starter for RS School",
   "main": "src/server.js",
   "scripts": {
-    "ts-dev": "nodemon ./src/server.ts",
+    "dev": "nodemon ./src/server.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "npm run build && fastify start -l info dist/app.js",
-    "dev": "npm run build && fastify start -w -l info -P dist/app.js --options",
+    "start": "npm run build && node ./dist/server.js",
     "lint": "eslint --ext .js,.ts --fix src/",
     "test": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/*.test.js\" --noStackTrace --runInBand",
     "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace"
@@ -47,16 +46,19 @@
     ]
   },
   "dependencies": {
+    "close-with-grace": "^1.1.0",
     "cross-env": "7.0.3",
     "dotenv": "10.0.0",
     "fastify": "^3.24.1",
     "fastify-autoload": "^3.9.0",
     "fastify-cli": "^2.14.0",
+    "pino": "^7.6.1",
     "yamljs": "0.3.0"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
     "@types/node": "^16.11.11",
+    "@types/pino": "^7.0.5",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
     "chai": "4.3.4",
