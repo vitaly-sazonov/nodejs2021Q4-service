@@ -28,4 +28,4 @@ process.on('unhandledRejection', () => {
 
 // Promise.reject(Error('PROM! Oops!'));
 
-throw Error('Oops!');
+// throw Error('Oops!');
