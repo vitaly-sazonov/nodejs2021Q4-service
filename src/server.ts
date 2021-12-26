@@ -14,18 +14,18 @@ app(fastify, {})
   .then((server) => server.listen(Number(PORT), () => console.log(`App is running on http://localhost:${PORT}`)))
   .catch(console.error);
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', async (err) => {
   console.error('unhandledRejection event, see error.log');
-  fastify.log.fatal({ msg: 'uncaughtException event', err });
+  await fastify.log.fatal({ msg: 'uncaughtException event', err });
   process.exit(1);
 });
 
-process.on('unhandledRejection', () => {
+process.on('unhandledRejection', async () => {
   console.error('unhandledRejection event, see error.log');
-  fastify.log.fatal({ msg: 'unhandledRejection event' });
+  await fastify.log.fatal({ msg: 'unhandledRejection event' });
   process.exit(1);
 });
 
 // Promise.reject(Error('PROM! Oops!'));
 
-// throw Error('Oops!');
+throw Error('Oops!');
