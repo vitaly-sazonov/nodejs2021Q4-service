@@ -9,12 +9,12 @@ const transport = pino.transport(<TransportMultiOptions>{
     {
       level: LOG_ERR_LEVEL,
       target: 'pino/file',
-      options: { destination: './error.log' },
+      options: { destination: './logs/error.log' },
     },
     {
       level: LOG_INFO_LEVEL,
       target: 'pino/file',
-      options: { destination: './info.log' },
+      options: { destination: './logs/info.log' },
     },
   ],
 });

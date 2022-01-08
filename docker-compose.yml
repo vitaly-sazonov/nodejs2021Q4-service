@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: web
+    env_file: .env
+    ports:
+      - '${PORT}:${PORT}'
+    restart: always
+    volumes:
+      - ./src:/home/app/src
+      - ./logs:/home/app/logs
+    networks:
+      - app-network
+  db:
+    build: ./db/
+    container_name: db
+    env_file: .env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - app-network
+networks:
+  app-network:
+    name: custom_network
+    driver: bridge
