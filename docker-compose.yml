@@ -8,11 +8,11 @@ services:
     container_name: web
     env_file: .env
     ports:
-      - '${PORT}:${PORT}'
+      - ${PORT}:${PORT}
     restart: always
     volumes:
       - ./src:/home/app/src
-      - ./logs:/home/app/logs
+      - logs:/home/app/logs
     networks:
       - app-network
   db:
@@ -22,12 +22,15 @@ services:
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+      - ${POSTGRES_PORT}:5432
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - pgdb:/var/lib/postgresql/data
     restart: always
     networks:
       - app-network
+volumes:
+  logs:
+  pgdb:
 networks:
   app-network:
     name: custom-network
