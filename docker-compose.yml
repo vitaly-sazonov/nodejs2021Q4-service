@@ -12,7 +12,7 @@ services:
     restart: always
     volumes:
       - ./src:/home/app/src
-      - logs:/home/app/logs
+      - app__logs:/home/app/logs
     networks:
       - app-network
   db:
@@ -24,13 +24,13 @@ services:
     ports:
       - ${POSTGRES_PORT}:5432
     volumes:
-      - pgdb:/var/lib/postgresql/data
+      - pg__db:/var/lib/postgresql/data
     restart: always
     networks:
       - app-network
 volumes:
-  logs:
-  pgdb:
+  app__logs:
+  pg__db:
 networks:
   app-network:
     name: custom-network
