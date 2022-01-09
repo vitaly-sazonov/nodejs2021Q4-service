@@ -3,6 +3,8 @@ version: '3.8'
 services:
   web:
     build: .
+    depends_on:
+      - db
     container_name: web
     env_file: .env
     ports:
