@@ -5,3 +5,5 @@ node_modules
 
 /db/pgdata
 /logs
+.DS_Store
+src/.DS_Store
