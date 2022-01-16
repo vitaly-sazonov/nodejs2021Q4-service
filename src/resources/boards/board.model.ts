@@ -1,38 +1,27 @@
-import { ColumnType } from '../columns/column.model';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
+import { Task } from '../tasks/tasks.model';
+
+export type ColumnType = { id: string; title: string; order: number };
 export type BoardType = { id: string; title: string; columns: ColumnType[] };
 
 /**
  * Class Board format.
  */
-class Board {
+@Entity('boards')
+export class Board extends BaseEntity {
   /** @public uuid record */
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
   /** @public title board */
-  title: string;
+  @Column()
+  title!: string;
+
   /** @public array of objects the column */
+  @Column({ type: 'json' })
   columns: ColumnType[] = [];
 
-  /**
-   * Constructor class Board
-   * @param object - data board format \{id, title, columns\}
-   * @returns Instance class Board
-   */
-  constructor({ id, title, columns }: BoardType) {
-    this.id = id;
-    this.title = title;
-    this.columns = columns;
-  }
-
-  /**
-   * Static formating function
-   * @param board - instance class Board
-   * @returns object - truncated data format to \{id, title, columns\}
-   */
-  static toResponse(board: BoardType) {
-    const { id, title, columns } = board;
-    return { id, title, columns };
-  }
+  @OneToMany(() => Task, (task) => task.board)
+  tasks!: Task[];
 }
-
-export default Board;
