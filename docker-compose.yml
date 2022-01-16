@@ -14,7 +14,7 @@ services:
       - ./:/home/app/
     networks:
       - app-network
-    entrypoint: ['npm', 'run', 'dev']
+    command: sh -c "npm run migration && npm run dev"
   db:
     build: ./db/
     container_name: db
