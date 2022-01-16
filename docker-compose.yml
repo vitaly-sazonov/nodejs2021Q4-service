@@ -9,12 +9,12 @@ services:
     env_file: .env
     ports:
       - ${PORT}:${PORT}
-    restart: always
+    # restart: always
     volumes:
-      - ./src:/home/app/src
-      - app__logs:/home/app/logs
+      - ./:/home/app/
     networks:
       - app-network
+    entrypoint: ['npm', 'run', 'dev']
   db:
     build: ./db/
     container_name: db
