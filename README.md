@@ -80,3 +80,11 @@ Run command:
 ```
 docker-compose up
 ```
+
+### Testing with docker
+
+Open another terminal from workspace folder and run command:
+
+```
+npm run test
+```
