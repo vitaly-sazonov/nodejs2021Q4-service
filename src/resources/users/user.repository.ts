@@ -1,31 +1,21 @@
-import { randomUUID } from 'crypto';
-import User, { UserTypeWithoutPassword, UserType } from './user.model';
-import { ResourceError } from '../../common/errors';
+import { Connection } from 'typeorm';
 
-import db from '../../db';
+import { User, UserTypeWithoutPassword, UserType } from './user.model';
+
+import { ResourceError } from '../../common/errors';
 
 /**
  * Class UserRepository for accessing User data
  */
 class UserRepository {
-  /** @internal _users - reference to simulate base */
-  _users;
-
-  /**
-   * Constructor class UserRepository
-   * @returns Instance class UserRepository
-   */
-  constructor() {
-    this._users = db.users;
-  }
-
   /**
    * Get all users from database
    * @returns array of objects data the user without password field
    */
-  getAll(): Array<UserTypeWithoutPassword> {
-    const arrayUsers = Array.from(this._users.values());
-    return arrayUsers.map((user) => User.toResponse(user));
+  async getAll(db: Connection): Promise<UserTypeWithoutPassword[]> {
+    const userRepo = db.getRepository(User);
+    const arrayUsers = await userRepo.find({ select: ['id', 'name', 'login'] });
+    return arrayUsers;
   }
 
   /**
@@ -33,11 +23,11 @@ class UserRepository {
    * @param user - data user \{name, login, password\}
    * @returns object user without password field \{id, name, login\}
    */
-  add(user: User): UserTypeWithoutPassword {
-    const id = randomUUID();
-    const instance = new User({ ...user, id });
-    this._users.set(instance.id, instance);
-    return User.toResponse(instance);
+  async add(db: Connection, user: UserType): Promise<UserTypeWithoutPassword> {
+    const modelUser = db.getRepository(User).create({ ...user });
+    await modelUser.save();
+    const { id, name, login } = modelUser;
+    return { id, name, login };
   }
 
   /**
@@ -45,12 +35,13 @@ class UserRepository {
    * @param id - user record uuid
    * @returns object user without password field \{id, name, login\}
    */
-  get(id: UUIDType): UserTypeWithoutPassword {
-    if (!this._users.has(id)) {
+  async get(db: Connection, id: UUIDType): Promise<UserTypeWithoutPassword> {
+    const userRepo = db.getRepository(User);
+    const user = await userRepo.findOne({ select: ['id', 'name', 'login'], where: { id } });
+    if (!user) {
       throw new ResourceError('user', 404, 'User was not founded!');
     }
-    const user = this._users.get(id);
-    return User.toResponse(user as User);
+    return user as UserTypeWithoutPassword;
   }
 
   /**
@@ -59,12 +50,17 @@ class UserRepository {
    * @param body - new user data of record
    * @returns object user without password field \{id, name, login\}
    */
-  update(id: UUIDType, body: UserType): UserTypeWithoutPassword {
-    if (!this._users.has(id)) {
+  async update(db: Connection, id: UUIDType, body: UserType): Promise<UserTypeWithoutPassword> {
+    const user = (await db.getRepository(User).findOne({ where: { id } })) as User;
+    if (!user) {
       throw new ResourceError('user', 404, 'User was not founded!');
     }
-    this._users.set(id, body);
-    return User.toResponse(body);
+
+    user.name = body.name;
+    user.login = body.login;
+    user.password = body.password;
+    const data = await user.save();
+    return data;
   }
 
   /**
@@ -72,8 +68,9 @@ class UserRepository {
    * @param id - user record uuid
    * @returns returns boolean type of query result
    */
-  remove(id: UUIDType) {
-    return this._users.delete(id);
+  async remove(db: Connection, id: UUIDType): Promise<void> {
+    const user = (await db.getRepository(User).findOne({ where: { id } })) as User;
+    await user.remove();
   }
 }
 

@@ -1,30 +1,29 @@
+import { Connection } from 'typeorm';
 import UsersRepo from './user.repository';
-import TasksRepo from '../tasks/tasks.repository';
 
-import User, { UserType } from './user.model';
+import { User, UserType } from './user.model';
 
 const userRepo = new UsersRepo();
-const taskRepo = new TasksRepo();
 
 /**
  * Get all users via UserRepository
  * @returns array of objects data the user without password field
  */
-const getAll = () => userRepo.getAll();
+const getAll = (db: Connection) => userRepo.getAll(db);
 
 /**
  * Add user in db via UserRepository
  * @param user - data user
  * @returns object user without password field \{id, name, login\}
  */
-const add = (user: User) => userRepo.add(user);
+const add = (db: Connection, user: UserType) => userRepo.add(db, user);
 
 /**
  * Get user record by record id from db via UserRepository
  * @param id - user record uuid
  * @returns object user without password field \{id, name, login\}
  */
-const getUser = (id: UUIDType) => userRepo.get(id);
+const getUser = (db: Connection, id: UUIDType) => userRepo.get(db, id);
 
 /**
  * Update user record by record id from db via UserRepository
@@ -32,7 +31,7 @@ const getUser = (id: UUIDType) => userRepo.get(id);
  * @param body - new user data of record
  * @returns object user without password field \{id, name, login\}
  */
-const update = (id: UUIDType, body: UserType) => userRepo.update(id, body);
+const update = (db: Connection, id: UUIDType, body: User) => userRepo.update(db, id, body);
 
 /**
  * Delete user record by record id from db via UserRepository
@@ -40,9 +39,8 @@ const update = (id: UUIDType, body: UserType) => userRepo.update(id, body);
  * @param id - user record uuid
  * @returns void
  */
-const remove = (id: UUIDType): void => {
-  userRepo.remove(id);
-  taskRepo.userNulling(id);
+const remove = async (db: Connection, id: UUIDType) => {
+  await userRepo.remove(db, id);
 };
 
 /**

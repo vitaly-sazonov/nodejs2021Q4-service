@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { UserType } from './user.model';
+
+import { User, UserType } from './user.model';
 
 import service from './user.service';
 
@@ -15,34 +16,39 @@ export default async (fastify: FastifyInstance) => {
   fastify.get('/users', {
     handler: async (_, reply) => {
       reply.code(200);
-      return service.getAll();
+      const { db } = fastify;
+      const result = await service.getAll(db);
+      return result;
     },
   });
 
   fastify.get<{ Params: IParams }>('/users/:id', {
     handler: async (req, reply) => {
       const { id } = req.params;
+      const { db } = fastify;
       reply.code(200);
-      return service.getUser(id);
+      return service.getUser(db, id);
     },
   });
 
   fastify.post<{ Body: UserType }>('/users', {
     handler: async (req, reply) => {
+      const { db } = fastify;
       const { body } = req;
       reply.code(201);
-      return service.add(body);
+      return service.add(db, body);
     },
   });
 
-  fastify.put<{ Params: IParams; Body: UserType }>('/users/:id', {
+  fastify.put<{ Params: IParams; Body: User }>('/users/:id', {
     handler: async (req, reply) => {
       const {
         params: { id },
         body,
       } = req;
+      const { db } = fastify;
       reply.code(200);
-      return service.update(id, body);
+      return service.update(db, id, body);
     },
   });
 
@@ -51,7 +57,8 @@ export default async (fastify: FastifyInstance) => {
       const {
         params: { id },
       } = req;
-      service.remove(id);
+      const { db } = fastify;
+      await service.remove(db, id);
       reply.code(204).send();
     },
   });
