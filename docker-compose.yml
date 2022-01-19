@@ -17,7 +17,7 @@ services:
       - ./typings:/home/app/typings
     networks:
       - app-network
-    command: sh -c "npm run dev"
+    command: sh -c "npm run migration && npm run dev"
   db:
     build: ./db/
     container_name: db
