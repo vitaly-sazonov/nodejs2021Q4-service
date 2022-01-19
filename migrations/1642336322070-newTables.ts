@@ -1,5 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
+import { genHashPassword  } from "../src/common/authenticate";
+
 export class newTables1642336322070 implements MigrationInterface {
     name = 'newTables1642336322070'
 
@@ -9,6 +11,9 @@ export class newTables1642336322070 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "boards" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "title" character varying NOT NULL, "columns" json NOT NULL, CONSTRAINT "PK_606923b0b068ef262dfdcd18f44" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "tasks" ADD CONSTRAINT "FK_166bd96559cb38595d392f75a35" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "tasks" ADD CONSTRAINT "FK_8a75fdea98c72c539a0879cb0d1" FOREIGN KEY ("boardId") REFERENCES "boards"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        
+        const password = await genHashPassword("password");
+        await queryRunner.query(`INSERT INTO "users" (name, login, password) VALUES ('admin', 'admin', '${password}')`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
