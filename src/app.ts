@@ -7,7 +7,10 @@ import fastifyJWT from 'fastify-jwt';
 import ormconfig from './ormconfig';
 import { ResourceError } from './common/errors';
 
+import authenticate from './common/authenticate';
+
 export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Promise<FastifyInstance> => {
+  //! register routes
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'resources/users'),
     maxDepth: 3,
@@ -35,10 +38,23 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
     },
   });
 
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'resources/login'),
+    maxDepth: 3,
+    indexPattern: /.*\.routes(\.ts|\.js|\.cjs|\.mjs)$/,
+    options: {
+      ...opts,
+    },
+  });
+
+  //! register JWT authenticate
   fastify.register(fastifyJWT, {
     secret: process.env.JWT_SECRET_KEY as string,
   });
 
+  fastify.addHook('preValidation', authenticate);
+
+  //! register db connection
   const db = await createConnection(ormconfig);
   fastify.decorate('db', db);
 
@@ -50,6 +66,7 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
     throw error;
   });
 
+  //! register logging body
   fastify.addHook('preHandler', (req, reply, done) => {
     if (req.body) {
       req.log.info({ body: req.body }, 'parsed body');
