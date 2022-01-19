@@ -11,3 +11,5 @@ COPY typings ./typings
 RUN npm ci --production
 
 RUN npm install -g nodemon
+
+RUN npm install -g ts-node
