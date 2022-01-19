@@ -2,6 +2,7 @@ import path from 'path';
 import AutoLoad from 'fastify-autoload';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import { createConnection } from 'typeorm';
+import fastifyJWT from 'fastify-jwt';
 
 import ormconfig from './ormconfig';
 import { ResourceError } from './common/errors';
@@ -32,6 +33,10 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
     options: {
       ...opts,
     },
+  });
+
+  fastify.register(fastifyJWT, {
+    secret: process.env.JWT_SECRET_KEY as string,
   });
 
   const db = await createConnection(ormconfig);

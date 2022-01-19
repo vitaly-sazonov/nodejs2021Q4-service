@@ -11,10 +11,13 @@ services:
       - ${PORT}:${PORT}
     # restart: always
     volumes:
-      - ./:/home/app/
+      - ./migrations:/home/app/migrations
+      - ./src:/home/app/src
+      - ./logs:/home/app/logs
+      - ./typings:/home/app/typings
     networks:
       - app-network
-    command: sh -c "npm run migration && npm run dev"
+    command: sh -c "npm run dev"
   db:
     build: ./db/
     container_name: db

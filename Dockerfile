@@ -8,6 +8,6 @@ COPY package*.json tsconfig.json ./
 
 COPY typings ./typings
 
-RUN npm ci --production
+RUN npm ci
 
 RUN npm install -g nodemon
