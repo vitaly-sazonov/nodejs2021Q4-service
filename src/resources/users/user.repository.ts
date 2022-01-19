@@ -1,12 +1,12 @@
 import { Connection } from 'typeorm';
 
-import bcrypt = require('bcrypt');
-
 import jwt = require('jsonwebtoken');
 
 import { User, UserTypeWithoutPassword, UserType, LoginType } from './user.model';
 
 import { ResourceError } from '../../common/errors';
+
+import { genHashPassword } from '../../common/authenticate';
 
 /**
  * Class UserRepository for accessing User data
@@ -29,7 +29,7 @@ class UserRepository {
    */
   async add(db: Connection, user: UserType): Promise<UserTypeWithoutPassword> {
     let { password } = user;
-    password = await bcrypt.hash(password, process.env.HASH_SALT as string);
+    password = await genHashPassword(password);
     const modelUser = db.getRepository(User).create({ ...user, password });
     await modelUser.save();
     const { id, name, login } = modelUser;
@@ -62,9 +62,11 @@ class UserRepository {
       throw new ResourceError('user', 404, 'User was not founded!');
     }
 
+    const password = await genHashPassword(body.password);
+
     user.name = body.name;
     user.login = body.login;
-    user.password = body.password;
+    user.password = password;
     const data = await user.save();
     return data;
   }
