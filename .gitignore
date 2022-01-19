@@ -2,6 +2,6 @@
 dist
 node_modules
 *.code-workspace
-
+/logs/*.log
 .DS_Store
 src/.DS_Store

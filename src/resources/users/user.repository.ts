@@ -1,6 +1,10 @@
 import { Connection } from 'typeorm';
 
-import { User, UserTypeWithoutPassword, UserType } from './user.model';
+import bcrypt = require('bcrypt');
+
+import jwt = require('jsonwebtoken');
+
+import { User, UserTypeWithoutPassword, UserType, LoginType } from './user.model';
 
 import { ResourceError } from '../../common/errors';
 
@@ -24,7 +28,9 @@ class UserRepository {
    * @returns object user without password field \{id, name, login\}
    */
   async add(db: Connection, user: UserType): Promise<UserTypeWithoutPassword> {
-    const modelUser = db.getRepository(User).create({ ...user });
+    let { password } = user;
+    password = await bcrypt.hash(password, process.env.HASH_SALT as string);
+    const modelUser = db.getRepository(User).create({ ...user, password });
     await modelUser.save();
     const { id, name, login } = modelUser;
     return { id, name, login };
@@ -71,6 +77,15 @@ class UserRepository {
   async remove(db: Connection, id: UUIDType): Promise<void> {
     const user = (await db.getRepository(User).findOne({ where: { id } })) as User;
     await user.remove();
+  }
+
+  async getToken(db: Connection, body: LoginType): Promise<string> {
+    const userRepo = db.getRepository(User);
+    const user = await userRepo.findOne({ select: ['id', 'password'], where: { login: body.login } });
+    if (!user) {
+      throw new ResourceError('user', 403, 'User was not founded!');
+    }
+    return jwt.sign({ userId: user.id, login: body.login }, process.env.JWT_SECRET_KEY as string);
   }
 }
 
