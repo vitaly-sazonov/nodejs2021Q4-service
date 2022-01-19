@@ -2,8 +2,6 @@
 dist
 node_modules
 *.code-workspace
-
-/db/pgdata
-/logs
+loglog
 .DS_Store
 src/.DS_Store
