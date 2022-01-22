@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 
-import bcrypt = require('bcrypt');
+import bcrypt = require('bcryptjs');
 
 const allowed = ['users', 'tasks', 'boards'];
 
