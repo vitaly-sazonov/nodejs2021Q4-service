@@ -12,7 +12,7 @@ export class newTables1642336322070 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "tasks" ADD CONSTRAINT "FK_166bd96559cb38595d392f75a35" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "tasks" ADD CONSTRAINT "FK_8a75fdea98c72c539a0879cb0d1" FOREIGN KEY ("boardId") REFERENCES "boards"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         
-        const password = await genHashPassword("password");
+        const password = await genHashPassword("admin");
         await queryRunner.query(`INSERT INTO "users" (name, login, password) VALUES ('admin', 'admin', '${password}')`);
     }
 
