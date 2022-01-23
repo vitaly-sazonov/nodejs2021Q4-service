@@ -2,7 +2,6 @@ import path from 'path';
 import AutoLoad from 'fastify-autoload';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
 import { createConnection } from 'typeorm';
-import fastifyJWT from 'fastify-jwt';
 
 import ormconfig from './ormconfig';
 import { ResourceError } from './common/errors';
