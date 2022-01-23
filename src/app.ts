@@ -48,9 +48,6 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
   });
 
   //! register JWT authenticate
-  fastify.register(fastifyJWT, {
-    secret: process.env.JWT_SECRET_KEY as string,
-  });
 
   fastify.register(authenticate);
 

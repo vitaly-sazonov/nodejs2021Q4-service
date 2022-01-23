@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin';
-
+import fastifyJWT from 'fastify-jwt';
 import bcrypt = require('bcryptjs');
 
 const allowed = ['users', 'tasks', 'boards'];
@@ -11,6 +11,10 @@ export const genHashPassword = async (password: string) => {
 };
 
 export default fp(async (fastify) => {
+  fastify.register(fastifyJWT, {
+    secret: process.env.JWT_SECRET_KEY as string,
+  });
+
   fastify.addHook('preValidation', async (req, reply) => {
     try {
       const route = req.url.split('/');
