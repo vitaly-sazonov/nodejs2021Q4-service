@@ -87,6 +87,11 @@ class UserRepository {
     if (!user) {
       throw new ResourceError('user', 403, 'User was not founded!');
     }
+    const match = await bcrypt.compare(body.password, user.password);
+    if (match) {
+      throw new ResourceError('user', 403, 'User was not founded!');
+    }
+
     return jwt.sign({ userId: user.id, login: body.login }, process.env.JWT_SECRET_KEY as string);
   }
 }
