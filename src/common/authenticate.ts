@@ -1,4 +1,4 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import fp from 'fastify-plugin';
 
 import bcrypt = require('bcryptjs');
 
@@ -10,14 +10,15 @@ export const genHashPassword = async (password: string) => {
   return out;
 };
 
-export default async (req: FastifyRequest, reply: FastifyReply) => {
-  try {
-    const route = req.url.split('/');
-
-    if (allowed.includes(route[1])) {
-      await req.jwtVerify();
+export default fp(async (fastify) => {
+  fastify.addHook('preValidation', async (req, reply) => {
+    try {
+      const route = req.url.split('/');
+      if (allowed.includes(route[1])) {
+        await req.jwtVerify();
+      }
+    } catch (err) {
+      reply.code(401).send();
     }
-  } catch (err) {
-    reply.code(401).send();
-  }
-};
+  });
+});

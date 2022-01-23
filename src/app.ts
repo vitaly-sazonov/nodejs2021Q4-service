@@ -52,7 +52,7 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
     secret: process.env.JWT_SECRET_KEY as string,
   });
 
-  fastify.addHook('preValidation', authenticate);
+  fastify.register(authenticate);
 
   //! register db connection
   const db = await createConnection(ormconfig);
