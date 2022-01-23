@@ -1,6 +1,7 @@
 import { Connection } from 'typeorm';
 
 import jwt = require('jsonwebtoken');
+import bcrypt = require('bcryptjs');
 
 import { User, UserTypeWithoutPassword, UserType, LoginType } from './user.model';
 
