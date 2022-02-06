@@ -1,11 +1,35 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ProductsModule } from './users/users.module';
+import { LoggerModule } from './logger/logger.module';
+import { UsersModule } from './resources/users/users.module';
+import { BoardsModule } from './resources/boards/boards.module';
+import { TasksModule } from './resources/tasks/tasks.module';
+import { ColumnsModule } from './resources/columns/columns.module';
+import { FileModule } from './resources/file/files.module';
+
+import ormconfig from './ormconfig';
 
 @Module({
-  imports: [ProductsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRoot({
+      ...ormconfig,
+      entities: [`${__dirname}/resources/**/**.entity{.ts,.js}`],
+      migrations: [`${__dirname}/migrations/*.ts`],
+    }),
+    LoggerModule,
+    UsersModule,
+    BoardsModule,
+    ColumnsModule,
+    TasksModule,
+    FileModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
