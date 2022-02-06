@@ -58,8 +58,8 @@ npm run test:auth
 
 - `User` (`/users` route)
 
-  - `GET /users` - get all users (remove password from response)
-  - `GET /users/:userId` - get the user by id (ex. “/users/123”) (remove password from response)
+  - `GET /users` - get all users
+  - `GET /users/:userId` - get the user by id (ex. “/users/123”)
   - `POST /users` - create user
   - `PUT /users/:userId` - update user
   - `DELETE /users/:userId` - delete user

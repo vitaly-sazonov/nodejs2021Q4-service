@@ -11,13 +11,13 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 import { CreateTaskDto } from './dto/create-tasks.dto';
 import { UpdateTaskDto } from './dto/update-tasks.dto';
 
 import { TasksService } from './tasks.service';
-import { ITask } from './tasks.entity';
+import { ITask, Task } from './tasks.entity';
 
 import { AuthGuard } from '../auth/jwt-auth.guard';
 
@@ -27,12 +27,19 @@ import { AuthGuard } from '../auth/jwt-auth.guard';
 export class TasksController {
   constructor(private readonly taskService: TasksService) {}
 
+  @ApiOperation({ summary: 'Get all tasks' })
+  @ApiResponse({ status: 200, type: [Task] })
+  @ApiParam({ name: 'boardId', description: 'ID Board' })
   @Get()
   @HttpCode(HttpStatus.OK)
   getAll(@Param('boardId', ParseUUIDPipe) boardId: UUIDType): Promise<ITask[]> {
     return this.taskService.getAll(boardId);
   }
 
+  @ApiOperation({ summary: 'Get the task by id' })
+  @ApiResponse({ status: 200, type: Task })
+  @ApiParam({ name: 'boardId', description: 'ID Board' })
+  @ApiParam({ name: 'taskId', description: 'ID Task' })
   @Get(':taskId')
   @HttpCode(HttpStatus.OK)
   getOne(
@@ -42,12 +49,20 @@ export class TasksController {
     return this.taskService.getById(boardId, taskId);
   }
 
+  @ApiOperation({ summary: 'Create task' })
+  @ApiResponse({ status: 201, type: Task })
+  @ApiParam({ name: 'boardId', description: 'ID Board' })
+  @ApiParam({ name: 'taskId', description: 'ID Task' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Param('boardId', ParseUUIDPipe) boardId: UUIDType, @Body() createTaskDto: CreateTaskDto): Promise<ITask> {
     return this.taskService.create(boardId, createTaskDto);
   }
 
+  @ApiOperation({ summary: 'Delete task' })
+  @ApiResponse({ status: 204 })
+  @ApiParam({ name: 'boardId', description: 'ID Board' })
+  @ApiParam({ name: 'taskId', description: 'ID Task' })
   @Delete(':taskId')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(
@@ -57,6 +72,10 @@ export class TasksController {
     return this.taskService.remove(boardId, taskId);
   }
 
+  @ApiOperation({ summary: 'Update task' })
+  @ApiResponse({ status: 200, type: Task })
+  @ApiParam({ name: 'boardId', description: 'ID Board' })
+  @ApiParam({ name: 'taskId', description: 'ID Task' })
   @Put(':taskId')
   @HttpCode(HttpStatus.OK)
   update(
