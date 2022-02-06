@@ -11,7 +11,7 @@ import { LogService } from './logger/logger.service';
 import { LoggingInterceptor } from './logger/logging.interceptor';
 
 const USE_FASTIFY = JSON.parse(process.env.USE_FASTIFY as string);
-const LOG_CONSOLE = JSON.parse(process.env.USE_FASTIFY as string);
+const LOG_CONSOLE = JSON.parse(process.env.LOG_CONSOLE as string);
 
 async function _initApp(isFastify: boolean, isLogger: boolean) {
   if (isFastify) {
