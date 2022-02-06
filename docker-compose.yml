@@ -14,10 +14,11 @@ services:
       - ./migrations:/home/app/migrations
       - ./src:/home/app/src
       - ./logs:/home/app/logs
+      - ./uploads:/home/app/uploads
       - ./typings:/home/app/typings
     networks:
       - app-network
-    command: sh -c "npm run migration && npm run dev"
+    command: sh -c "npm run typeorm:migration && npm run start:dev"
   db:
     build: ./db/
     container_name: db

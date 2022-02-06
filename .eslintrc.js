@@ -29,12 +29,24 @@ module.exports = {
     },
   },
   plugins: ['@typescript-eslint', 'eslint-plugin-tsdoc'],
-  extends: ['eslint:recommended', 'plugin:node/recommended', 'airbnb-base', 'plugin:@typescript-eslint/recommended', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'plugin:node/recommended',
+    'airbnb-base',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
   rules: {
     'no-useless-constructor': 'off',
     'import/extensions': 'off',
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'node/no-extraneous-import': [
+      'error',
+      {
+        allowModules: ['uuid'],
+      },
+    ],
     'node/no-missing-import': 'off',
     'node/no-unpublished-import': 'off',
     'node/no-unsupported-features/es-syntax': 'off',
