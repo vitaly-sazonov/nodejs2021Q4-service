@@ -1,54 +1,56 @@
-import { Connection } from 'typeorm';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import TasksRepo from './tasks.repository';
-import { TaskType } from './tasks.model';
+import { Repository } from 'typeorm';
 
-const taskRepo = new TasksRepo();
+import { CreateTaskDto } from './dto/create-tasks.dto';
+import { UpdateTaskDto } from './dto/update-tasks.dto';
 
-/**
- * Get all tasks the board via TaskRepository
- * @param boardId - board uuid
- * @returns array of objects data the task
- */
-const getAll = (db: Connection, boardId: UUIDType) => taskRepo.getAll(db, boardId);
+import { Task, ITask } from './tasks.entity';
 
-/**
- * Add task in board via TaskRepository
- * @param boardId - board uuid
- * @param task - data task \{ title, order, description, userId, boardId, columnId\}
- * @returns object - data format to \{id, title, order, description, userId, boardId, columnId\}
- */
-const add = (db: Connection, boardId: UUIDType, task: TaskType) => taskRepo.add(db, boardId, task);
+@Injectable()
+export class TasksService {
+  constructor(@InjectRepository(Task) private tasksRepository: Repository<Task>) {}
 
-/**
- * Get task record in board via TaskRepository
- * @param boardId - board uuid
- * @param id - task uuid
- * @returns instance Task
- */
-const getTask = (db: Connection, boardId: UUIDType, id: UUIDType) => taskRepo.get(db, boardId, id);
+  async getAll(boardId: UUIDType): Promise<ITask[]> {
+    const resp = await this.tasksRepository.find({ where: { boardId } });
+    return resp;
+  }
 
-/**
- * Update task record in board
- * @param boardId - board uuid
- * @param id - task uuid
- * @param body - new task data of record
- * @returns object task \{id, title, order, description, userId, boardId, columnId\}
- */
-const update = (db: Connection, boardId: UUIDType, id: UUIDType, body: TaskType) => taskRepo.update(db, boardId, id, body);
+  async getById(boardId: UUIDType, taskId: UUIDType): Promise<ITask> {
+    const task = await this.tasksRepository.findOne({ where: { boardId, id: taskId } });
+    if (!task) {
+      throw new HttpException('Task was not founded!', HttpStatus.NOT_FOUND);
+    }
+    return task as ITask;
+  }
 
-/**
- * Delete task record in boards
- * @param boardId - board uuid
- * @param id - task uuid
- * @returns returns boolean type of query result
- */
-const remove = async (db: Connection, boardId: UUIDType, id: UUIDType) => {
-  await taskRepo.remove(db, boardId, id);
-};
+  async create(boardId: UUIDType, taskDto: CreateTaskDto): Promise<ITask> {
+    const modelTask = await this.tasksRepository.create({ ...taskDto, boardId }).save();
+    return modelTask;
+  }
 
-/**
- * Service of tasks
- * @returns functions \{ getAll, add, getTask, update, remove \}
- */
-export default { getAll, add, getTask, update, remove };
+  async remove(boardId: UUIDType, taskId: UUIDType): Promise<void> {
+    const task = (await this.tasksRepository.findOne({ where: { boardId, id: taskId } })) as Task;
+    if (!task) {
+      throw new HttpException('Task was not founded!', HttpStatus.NOT_FOUND);
+    }
+    await task.remove();
+  }
+
+  async update(boardId: UUIDType, taskId: UUIDType, body: UpdateTaskDto): Promise<ITask> {
+    const task = (await this.tasksRepository.findOne({ where: { boardId, id: taskId } })) as Task;
+    if (!task) {
+      throw new HttpException('Task was not founded!', HttpStatus.NOT_FOUND);
+    }
+
+    task.title = body.title;
+    task.order = body.order;
+    task.description = body.description;
+    task.userId = body.userId;
+    task.boardId = body.boardId;
+    task.columnId = body.columnId;
+    const data = await task.save();
+    return data;
+  }
+}
