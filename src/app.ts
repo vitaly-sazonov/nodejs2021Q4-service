@@ -1,6 +1,9 @@
 import path from 'path';
 import AutoLoad from 'fastify-autoload';
 import { FastifyInstance, RouteShorthandOptions } from 'fastify';
+import { createConnection } from 'typeorm';
+
+import ormconfig from './ormconfig';
 import { ResourceError } from './common/errors';
 
 export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Promise<FastifyInstance> => {
@@ -30,6 +33,9 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
       ...opts,
     },
   });
+
+  const db = await createConnection(ormconfig);
+  fastify.decorate('db', db);
 
   fastify.addHook('onError', async (_, reply, error) => {
     if (error instanceof ResourceError) {

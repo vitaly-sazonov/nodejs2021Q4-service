@@ -9,12 +9,15 @@ services:
     env_file: .env
     ports:
       - ${PORT}:${PORT}
-    restart: always
+    # restart: always
     volumes:
+      - ./migrations:/home/app/migrations
       - ./src:/home/app/src
-      - app__logs:/home/app/logs
+      - ./logs:/home/app/logs
+      - ./typings:/home/app/typings
     networks:
       - app-network
+    command: sh -c "npm run migration && npm run dev"
   db:
     build: ./db/
     container_name: db

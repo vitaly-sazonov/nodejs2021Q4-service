@@ -1,3 +1,5 @@
+import { Connection } from 'typeorm';
+
 import TasksRepo from './tasks.repository';
 import { TaskType } from './tasks.model';
 
@@ -8,7 +10,7 @@ const taskRepo = new TasksRepo();
  * @param boardId - board uuid
  * @returns array of objects data the task
  */
-const getAll = (boardId: UUIDType) => taskRepo.getAll(boardId);
+const getAll = (db: Connection, boardId: UUIDType) => taskRepo.getAll(db, boardId);
 
 /**
  * Add task in board via TaskRepository
@@ -16,7 +18,7 @@ const getAll = (boardId: UUIDType) => taskRepo.getAll(boardId);
  * @param task - data task \{ title, order, description, userId, boardId, columnId\}
  * @returns object - data format to \{id, title, order, description, userId, boardId, columnId\}
  */
-const add = (boardId: UUIDType, task: TaskType) => taskRepo.add(boardId, task);
+const add = (db: Connection, boardId: UUIDType, task: TaskType) => taskRepo.add(db, boardId, task);
 
 /**
  * Get task record in board via TaskRepository
@@ -24,7 +26,7 @@ const add = (boardId: UUIDType, task: TaskType) => taskRepo.add(boardId, task);
  * @param id - task uuid
  * @returns instance Task
  */
-const getTask = (boardId: UUIDType, id: UUIDType) => taskRepo.get(boardId, id);
+const getTask = (db: Connection, boardId: UUIDType, id: UUIDType) => taskRepo.get(db, boardId, id);
 
 /**
  * Update task record in board
@@ -33,7 +35,7 @@ const getTask = (boardId: UUIDType, id: UUIDType) => taskRepo.get(boardId, id);
  * @param body - new task data of record
  * @returns object task \{id, title, order, description, userId, boardId, columnId\}
  */
-const update = (boardId: UUIDType, id: UUIDType, body: TaskType) => taskRepo.update(boardId, id, body);
+const update = (db: Connection, boardId: UUIDType, id: UUIDType, body: TaskType) => taskRepo.update(db, boardId, id, body);
 
 /**
  * Delete task record in boards
@@ -41,7 +43,9 @@ const update = (boardId: UUIDType, id: UUIDType, body: TaskType) => taskRepo.upd
  * @param id - task uuid
  * @returns returns boolean type of query result
  */
-const remove = (boardId: UUIDType, id: UUIDType) => taskRepo.remove(boardId, id);
+const remove = async (db: Connection, boardId: UUIDType, id: UUIDType) => {
+  await taskRepo.remove(db, boardId, id);
+};
 
 /**
  * Service of tasks

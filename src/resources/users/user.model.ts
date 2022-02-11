@@ -1,40 +1,31 @@
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+
+import { Task } from '../tasks/tasks.model';
+
 export type UserType = { id: string; name: string; login: string; password: string };
 export type UserTypeWithoutPassword = { id: string; name: string; login: string };
-
 /**
  * Class User format.
  */
-class User {
+@Entity('users')
+export class User extends BaseEntity {
   /** @public uuid record */
-  id: string;
+
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
   /** @public name user */
-  name: string;
+  @Column()
+  name!: string;
+
   /** @public login user */
-  login: string;
+  @Column()
+  login!: string;
+
   /** @public password user */
-  password: string;
+  @Column()
+  password!: string;
 
-  /**
-   * Constructor class User
-   * @param object - data user format \{id, name, login, password\}
-   * @returns Instance class User
-   */
-  constructor({ id, name, login, password }: UserType) {
-    this.id = id;
-    this.name = name;
-    this.login = login;
-    this.password = password;
-  }
-
-  /**
-   * Static formating function
-   * @param user - instance class User
-   * @returns object - truncated data format to \{id, name, login\}
-   */
-  static toResponse(user: User): UserTypeWithoutPassword {
-    const { id, name, login } = user;
-    return { id, name, login };
-  }
+  @OneToMany(() => Task, (task) => task.user)
+  tasks!: string;
 }
-
-export default User;

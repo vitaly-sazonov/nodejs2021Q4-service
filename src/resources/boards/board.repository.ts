@@ -1,30 +1,19 @@
-import { randomUUID } from 'crypto';
-import db from '../../db';
-import Board, { BoardType } from './board.model';
-import Column from '../columns/column.model';
+import { Connection } from 'typeorm';
+
+import { Board, BoardType } from './board.model';
 import { ResourceError } from '../../common/errors';
 
 /**
  * Class BoardRepository for accessing Board data
  */
 class BoardRepository {
-  /** @internal _boards - reference to simulate base */
-  _boards;
-
-  /**
-   * Constructor class BoardRepository
-   * @returns Instance class BoardRepository
-   */
-  constructor() {
-    this._boards = db.boards;
-  }
-
   /**
    * Get all boards from database
    * @returns array of objects data the board
    */
-  getAll(): BoardType[] {
-    return Array.from(this._boards.values());
+  async getAll(db: Connection): Promise<BoardType[]> {
+    const arrayBoards = await db.getRepository(Board).find();
+    return arrayBoards;
   }
 
   /**
@@ -32,13 +21,10 @@ class BoardRepository {
    * @param board - data board \{title, columns\}
    * @returns object board \{id, title, columns\}
    */
-  add(board: BoardType): BoardType {
-    const id = randomUUID();
-    const { columns, ...rest } = board;
-
-    const instance = new Board({ ...rest, id, columns: columns.map((column) => new Column(column)) });
-    this._boards.set(instance.id, instance);
-    return Board.toResponse(instance);
+  async add(db: Connection, board: BoardType): Promise<BoardType> {
+    const modelBoard = db.getRepository(Board).create({ ...board });
+    await modelBoard.save();
+    return modelBoard;
   }
 
   /**
@@ -46,11 +32,12 @@ class BoardRepository {
    * @param id - board record uuid
    * @returns object board \{id, title, columns\}
    */
-  get(id: UUIDType): BoardType {
-    if (!this._boards.has(id)) {
+  async get(db: Connection, id: UUIDType): Promise<BoardType> {
+    const board = await db.getRepository(Board).findOne({ select: ['id', 'title', 'columns'], where: { id } });
+    if (!board) {
       throw new ResourceError('board', 404, 'Board was not founded!');
     }
-    return this._boards.get(id) as BoardType;
+    return board as BoardType;
   }
 
   /**
@@ -59,12 +46,16 @@ class BoardRepository {
    * @param body - new board data of record
    * @returns object board \{id, title, columns\}
    */
-  update(id: UUIDType, body: BoardType): BoardType {
-    if (!this._boards.has(id)) {
+  async update(db: Connection, id: UUIDType, body: BoardType): Promise<BoardType> {
+    const board = await db.getRepository(Board).findOne({ where: { id } });
+    if (!board) {
       throw new ResourceError('board', 404, 'Board was not founded!');
     }
-    this._boards.set(id, body);
-    return body;
+
+    board.title = body.title;
+    board.columns = body.columns;
+    const data = await board.save();
+    return data;
   }
 
   /**
@@ -72,8 +63,9 @@ class BoardRepository {
    * @param id - board record uuid
    * @returns returns boolean type of query result
    */
-  remove(id: UUIDType): boolean {
-    return this._boards.delete(id);
+  async remove(db: Connection, id: UUIDType): Promise<void> {
+    const board = (await db.getRepository(Board).findOne({ where: { id } })) as Board;
+    await board.remove();
   }
 }
 

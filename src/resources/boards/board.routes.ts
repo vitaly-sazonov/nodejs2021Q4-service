@@ -15,7 +15,7 @@ export default async (fastify: FastifyInstance) => {
   fastify.get('/boards', {
     handler: async (_, reply) => {
       reply.code(200);
-      const tasks = await service.getAll();
+      const tasks = await service.getAll(fastify.db);
       return tasks;
     },
   });
@@ -25,7 +25,7 @@ export default async (fastify: FastifyInstance) => {
       const { id } = req.params;
 
       reply.code(200);
-      const tasks = service.getBoard(id);
+      const tasks = service.getBoard(fastify.db, id);
       return tasks;
     },
   });
@@ -34,7 +34,7 @@ export default async (fastify: FastifyInstance) => {
     handler: async (req, reply) => {
       const { body } = req;
       reply.code(201);
-      const tasks = service.add(body);
+      const tasks = service.add(fastify.db, body);
       return tasks;
     },
   });
@@ -46,7 +46,7 @@ export default async (fastify: FastifyInstance) => {
         body,
       } = req;
       reply.code(200);
-      const renewed = service.update(id, body);
+      const renewed = service.update(fastify.db, id, body);
       return renewed;
     },
   });
@@ -54,7 +54,7 @@ export default async (fastify: FastifyInstance) => {
   fastify.delete<{ Params: IParams }>('/boards/:id', {
     handler: async (req, reply) => {
       const { id } = req.params;
-      service.remove(id);
+      await service.remove(fastify.db, id);
       reply.code(204);
     },
   });
