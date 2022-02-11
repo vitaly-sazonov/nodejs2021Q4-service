@@ -2,6 +2,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from 't
 
 import { Task } from '../tasks/tasks.model';
 
+export type LoginType = { login: string; password: string };
 export type UserType = { id: string; name: string; login: string; password: string };
 export type UserTypeWithoutPassword = { id: string; name: string; login: string };
 /**

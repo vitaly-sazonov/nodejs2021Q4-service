@@ -7,5 +7,3 @@ WORKDIR /home/app/
 COPY package*.json tsconfig.json ./
 
 RUN npm ci
-
-RUN npm install -g nodemon
