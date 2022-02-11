@@ -70,3 +70,13 @@ npm run lint
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+## Run Docker
+
+Install docker and docker-compose using the instruction https://docs.docker.com/get-docker/
+
+Run command:
+
+```
+docker-compose up
+```

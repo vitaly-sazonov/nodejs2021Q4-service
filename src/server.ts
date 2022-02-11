@@ -11,21 +11,20 @@ const fastify: FastifyInstance = Fastify({
 });
 
 app(fastify, {})
-  .then((server) => server.listen(Number(PORT), () => console.log(`App is running on http://localhost:${PORT}`)))
+  .then((server) => server.listen(Number(PORT), '0.0.0.0', () => console.log(`App is running on http://localhost:${PORT}`)))
   .catch(console.error);
 
-process.on('uncaughtException', async (err) => {
+process.on('uncaughtException', (err) => {
   console.error('unhandledRejection event, see error.log');
-  await fastify.log.fatal({ msg: 'uncaughtException event', err });
-  process.exit(1);
+  fastify.log.fatal({ msg: 'uncaughtException event', err });
+  process.exit(100);
 });
 
-process.on('unhandledRejection', async () => {
+process.on('unhandledRejection', () => {
   console.error('unhandledRejection event, see error.log');
-  await fastify.log.fatal({ msg: 'unhandledRejection event' });
-  process.exit(1);
+  fastify.log.fatal({ msg: 'unhandledRejection event' });
+  process.exit(100);
 });
 
 // Promise.reject(Error('PROM! Oops!'));
-
-throw Error('Oops!');
+// throw Error('Oops!');
