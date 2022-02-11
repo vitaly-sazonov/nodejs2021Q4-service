@@ -1,24 +1,31 @@
-const express = require('express');
-const swaggerUI = require('swagger-ui-express');
 const path = require('path');
-const YAML = require('yamljs');
-const userRouter = require('./resources/users/user.router');
+const AutoLoad = require('fastify-autoload');
 
-const app = express();
-const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
+module.exports = async (fastify, opts) => {
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'resources/users'),
+    maxDepth: 3,
+    indexPattern: /.*\.routes(\.ts|\.js|\.cjs|\.mjs)$/,
+    options: {
+      ...opts,
+    },
+  });
 
-app.use(express.json());
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'resources/boards'),
+    maxDepth: 3,
+    indexPattern: /.*\.routes(\.ts|\.js|\.cjs|\.mjs)$/,
+    options: {
+      ...opts,
+    },
+  });
 
-app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
-
-app.use('/', (req, res, next) => {
-  if (req.originalUrl === '/') {
-    res.send('Service is running!');
-    return;
-  }
-  next();
-});
-
-app.use('/users', userRouter);
-
-module.exports = app;
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'resources/tasks'),
+    maxDepth: 3,
+    indexPattern: /.*\.routes(\.ts|\.js|\.cjs|\.mjs)$/,
+    options: {
+      ...opts,
+    },
+  });
+};

@@ -16,12 +16,7 @@
   "settings": {
     "noInlineConfig": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:node/recommended",
-    "airbnb-base",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "plugin:node/recommended", "airbnb-base", "prettier"],
   "rules": {
     "import/extensions": "off",
     "linebreak-style": "off",

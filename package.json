@@ -9,7 +9,8 @@
   "description": "REST service starter for RS School",
   "main": "src/server.js",
   "scripts": {
-    "start": "nodemon src/server.js",
+    "start": "fastify start -l info src/app.js",
+    "dev": "fastify start -w -l info -P src/app.js --options ",
     "lint": "eslint --ext .js,.ts --fix src/",
     "test": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/*.test.js\" --noStackTrace --runInBand",
     "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace"
@@ -46,8 +47,9 @@
   "dependencies": {
     "cross-env": "7.0.3",
     "dotenv": "10.0.0",
-    "express": "4.17.1",
-    "swagger-ui-express": "4.1.6",
+    "fastify": "^3.24.1",
+    "fastify-autoload": "^3.9.0",
+    "fastify-cli": "^2.14.0",
     "uuid": "8.3.2",
     "yamljs": "0.3.0"
   },
