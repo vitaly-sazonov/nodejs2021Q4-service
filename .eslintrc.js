@@ -39,7 +39,9 @@ module.exports = {
     'linebreak-style': 'off',
     'no-underscore-dangle': 'off',
     'tsdoc/syntax': 'error',
+    'no-shadow': 'off',
     '@typescript-eslint/no-explicit-any': ['error'],
+    '@typescript-eslint/no-shadow': 'off',
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
   },
 };

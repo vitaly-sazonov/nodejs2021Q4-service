@@ -39,5 +39,12 @@ export default async (fastify: FastifyInstance, opts: RouteShorthandOptions): Pr
     throw error;
   });
 
+  fastify.addHook('preHandler', (req, reply, done) => {
+    if (req.body) {
+      req.log.info({ body: req.body }, 'parsed body');
+    }
+    done();
+  });
+
   return fastify;
 };
