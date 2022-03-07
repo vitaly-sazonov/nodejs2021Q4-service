@@ -80,7 +80,7 @@ npm run test:auth
   - `PUT /boards/:boardId/tasks/:taskId` - update task
   - `DELETE /boards/:boardId/tasks/:taskId` - delete task
 
-* `Column` (`boards/:boardId/tasks` route)
+* `Column` (`boards/:boardId/columns` route)
 
   - `GET /columns` - get all columns
   - `GET /columns/:columnsId` - get the column by id
