@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CreateColumnDto } from './dto/create-column.dto';
-
+import { UpdateColumnDto } from './dto/update-column.dto';
 import { Column, IColumn } from './columns.entity';
 
 @Injectable()
@@ -37,7 +37,7 @@ export class ColumnsService {
     await column.remove();
   }
 
-  async update(columnId: UUIDType, body: CreateColumnDto): Promise<IColumn> {
+  async update(columnId: UUIDType, body: UpdateColumnDto): Promise<IColumn> {
     const column = (await this.columnsRepository.findOne({ where: { id: columnId } })) as Column;
     if (!column) {
       throw new HttpException('Column was not founded!', HttpStatus.NOT_FOUND);
@@ -45,7 +45,7 @@ export class ColumnsService {
 
     column.title = body.title;
     column.order = body.order;
-    const data = await column.save();
-    return data;
+    const { id, title, order } = await column.save();
+    return { id, title, order };
   }
 }

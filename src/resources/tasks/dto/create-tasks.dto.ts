@@ -23,14 +23,6 @@ export class CreateTaskDto {
   readonly userId!: string | null;
 
   @ApiProperty({
-    example: '8d3bad56-ad8a-495d-9500-18ae4d1de8dc',
-    description: 'ID of the Board to which the belongs task',
-  })
-  @IsString()
-  @ValidateIf((object, value) => value !== null)
-  readonly boardId!: string | null;
-
-  @ApiProperty({
     example: '41344d09-b995-451f-93dc-2f17ae13a4a9',
     description: 'ID of the Column to which the belongs task',
   })

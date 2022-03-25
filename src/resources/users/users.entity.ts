@@ -44,6 +44,6 @@ export class User extends BaseEntity {
   @Column()
   password!: string;
 
-  @OneToMany(() => Task, (task) => task.user)
+  @OneToMany(() => Task, (task) => task.user, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   tasks!: string;
 }

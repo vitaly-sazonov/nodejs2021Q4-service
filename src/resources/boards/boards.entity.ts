@@ -34,9 +34,9 @@ export class Board extends BaseEntity {
 
   /** @public array of objects the column */
   @ApiProperty({ type: [CreateNestedColumnDto] })
-  @OneToMany(() => Column, (column) => column.board)
+  @OneToMany(() => Column, (column) => column.board, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   columns!: CreateNestedColumnDto[];
 
-  @OneToMany(() => Task, (task) => task.board)
+  @OneToMany(() => Task, (task) => task.board, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   tasks!: Task[];
 }

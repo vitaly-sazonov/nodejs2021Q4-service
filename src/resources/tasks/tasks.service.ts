@@ -13,16 +13,46 @@ export class TasksService {
   constructor(@InjectRepository(Task) private tasksRepository: Repository<Task>) {}
 
   async getAll(boardId: UUIDType): Promise<ITask[]> {
-    const resp = await this.tasksRepository.find({ where: { boardId } });
+    const resp = await this.tasksRepository
+      .createQueryBuilder('tasks')
+      .where({ boardId })
+      .select([
+        'tasks.id',
+        'tasks.title',
+        'tasks.order',
+        'tasks.description',
+        'tasks.userId',
+        'tasks.boardId',
+        'tasks.columnId',
+        'files.filename',
+        'files.fileSize',
+      ])
+      .leftJoin('tasks.files', 'files')
+      .getMany();
     return resp;
   }
 
   async getById(boardId: UUIDType, taskId: UUIDType): Promise<ITask> {
-    const task = await this.tasksRepository.findOne({ where: { boardId, id: taskId } });
+    const task = await this.tasksRepository
+      .createQueryBuilder('tasks')
+      .where({ boardId, id: taskId })
+      .select([
+        'tasks.id',
+        'tasks.title',
+        'tasks.order',
+        'tasks.description',
+        'tasks.userId',
+        'tasks.boardId',
+        'tasks.columnId',
+        'files.filename',
+        'files.fileSize',
+      ])
+      .leftJoin('tasks.files', 'files')
+      .getOne();
     if (!task) {
       throw new HttpException('Task was not founded!', HttpStatus.NOT_FOUND);
     }
-    return task as ITask;
+    return task;
   }
 
   async create(boardId: UUIDType, taskDto: CreateTaskDto): Promise<ITask> {

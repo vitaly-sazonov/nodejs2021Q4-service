@@ -1,9 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column as ColumnPg, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column as ColumnPg,
+  JoinColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 
 import { Column } from '../columns/columns.entity';
 import { Board } from '../boards/boards.entity';
 import { User } from '../users/users.entity';
+import { File } from '../file/files.entity';
 
 export interface ITask {
   id: UUIDType;
@@ -39,7 +48,7 @@ export class Task extends BaseEntity {
   description!: string;
 
   /** @public user uuid */
-  @ManyToOne(() => User, (user) => user.tasks, { onDelete: 'SET NULL' })
+  @ManyToOne(() => User, (user) => user.tasks, { onDelete: 'SET NULL', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user!: string;
 
@@ -49,7 +58,7 @@ export class Task extends BaseEntity {
   userId!: string | null;
 
   /** @public board uuid */
-  @ManyToOne(() => Board, (board) => board.tasks, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Board, (board) => board.tasks, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'boardId' })
   board!: string;
 
@@ -61,7 +70,7 @@ export class Task extends BaseEntity {
   boardId!: string | null;
 
   /** @public column uuid */
-  @ManyToOne(() => Column, (column) => column.tasks, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Column, (column) => column.tasks, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'columnId' })
   column!: string;
 
@@ -71,4 +80,7 @@ export class Task extends BaseEntity {
   })
   @ColumnPg({ nullable: true })
   columnId!: string;
+
+  @OneToMany(() => File, (file) => file.task, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  files!: File[];
 }

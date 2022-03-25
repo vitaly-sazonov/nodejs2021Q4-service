@@ -11,6 +11,6 @@ import { FileService } from './files.service';
   controllers: [FileController],
   providers: [FileService],
   imports: [AuthModule, TypeOrmModule.forFeature([File])],
-  exports: [],
+  exports: [FileService],
 })
 export class FileModule {}

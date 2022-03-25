@@ -30,16 +30,12 @@ export class Column extends BaseEntity {
   @ColumnPg()
   order!: number;
 
-  @ManyToOne(() => Board, (board) => board.columns, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Board, (board) => board.columns, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   board!: Board;
 
-  @ApiProperty({
-    example: '8d3bad56-ad8a-495d-9500-18ae4d1de8dc',
-    description: 'ID of the Board to which the belongs Column',
-  })
   @ColumnPg({ nullable: true, select: false })
   boardId!: string | null;
 
-  @OneToMany(() => Task, (task) => task.column)
+  @OneToMany(() => Task, (task) => task.column, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   tasks!: Task[];
 }

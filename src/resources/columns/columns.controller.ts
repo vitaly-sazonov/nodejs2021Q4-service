@@ -11,9 +11,10 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 import { CreateColumnDto } from './dto/create-column.dto';
+import { UpdateColumnDto } from './dto/update-column.dto';
 
 import { ColumnsService } from './columns.service';
 import { IColumn, Column } from './columns.entity';
@@ -21,6 +22,7 @@ import { IColumn, Column } from './columns.entity';
 import { AuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Columns')
+@ApiBearerAuth('token')
 @Controller('/columns')
 @UseGuards(AuthGuard)
 export class ColumnsController {
@@ -67,7 +69,7 @@ export class ColumnsController {
   @HttpCode(HttpStatus.OK)
   update(
     @Param('columnId', ParseUUIDPipe) columnId: UUIDType,
-    @Body() updateColumnDto: CreateColumnDto,
+    @Body() updateColumnDto: UpdateColumnDto,
   ): Promise<IColumn> {
     return this.columnService.update(columnId, updateColumnDto);
   }

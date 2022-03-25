@@ -11,7 +11,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
@@ -22,6 +22,7 @@ import { IBoard, Board } from './boards.entity';
 import { AuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Boards')
+@ApiBearerAuth('token')
 @Controller('boards')
 @UseGuards(AuthGuard)
 export class BoardsController {

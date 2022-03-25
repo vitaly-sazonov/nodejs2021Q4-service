@@ -8,24 +8,21 @@ import { File } from './files.entity';
 export class FileService {
   constructor(@InjectRepository(File) private fileRepository: Repository<File>) {}
 
-  async checkExistFileInDB(filename: string): Promise<boolean> {
-    const isExist = await this.fileRepository.findOne({ select: ['fileId'], where: { filename } });
-    if (isExist) {
-      return true;
-    }
-    return false;
+  async checkExistFileInDB(taskId: UUIDType, filename: string): Promise<boolean> {
+    const isExist = await this.fileRepository.findOne({ select: ['fileId'], where: { taskId, filename } });
+    return !!isExist;
   }
 
-  async saveFilename(filename: string, fileId: UUIDType, fileSize: number): Promise<string> {
+  async saveFilename(filename: string, fileId: UUIDType, fileSize: number, taskId: UUIDType): Promise<string> {
     try {
-      await this.fileRepository.create({ filename, fileId, fileSize }).save();
+      await this.fileRepository.create({ filename, fileId, fileSize, taskId }).save();
     } catch (e) {
       throw new HttpException('File already exists!', HttpStatus.CONFLICT);
     }
     return 'File uploaded!';
   }
 
-  async findFileId(filename: string): Promise<string> {
+  async findFileId(taskId: string, filename: string): Promise<string> {
     const modelFile = await this.fileRepository.findOne({ select: ['fileId'], where: { filename } });
     if (!modelFile) {
       throw new HttpException('File was not founded!', HttpStatus.NOT_FOUND);

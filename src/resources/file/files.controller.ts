@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Param,
+  Body,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -14,27 +15,31 @@ import {
 } from '@nestjs/common';
 import { existsSync, createReadStream } from 'fs';
 import { join } from 'path';
-import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { Express } from 'express';
-import { AuthGuard } from '../auth/jwt-auth.guard';
+import { diskStorage } from 'multer';
 
-import { FileInterceptor } from './files.interceptor.adapter';
+import { AuthGuard } from '../auth/jwt-auth.guard';
+import { FileFastifyInterceptor } from './files.interceptor';
 import { FileService } from './files.service';
-import { UploadFileDto } from './dto/upload-file.dto';
+import { SaveFileDto } from './dto/save-file.dto';
 
 @ApiTags('Upload/Download file')
+@ApiBearerAuth('token')
 @Controller()
 @UseGuards(AuthGuard)
 export class FileController {
   constructor(private fileService: FileService) {}
 
-  // TODO: Fix! Добавить проверку не существование файла и отменить загрузку файла
   @ApiOperation({ summary: 'Upload file' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
+        taskId: {
+          type: 'string',
+        },
         file: {
           type: 'string',
           format: 'binary',
@@ -45,25 +50,29 @@ export class FileController {
   @ApiResponse({ status: 200, description: 'File uploaded' })
   @Post('/file')
   @UseInterceptors(
-    FileInterceptor('file', {
-      destination: './uploads',
-      filename: (req, file, cb) => cb(null, uuid()),
+    FileFastifyInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => cb(null, uuid()),
+      }),
     }),
   )
   @HttpCode(HttpStatus.OK)
-  upload(@UploadedFile() file: Express.Multer.File): Promise<string> {
-    return this.fileService.saveFilename(file.originalname, file.filename, file.size);
+  upload(@UploadedFile() file: Express.Multer.File, @Body() body: SaveFileDto): Promise<string> {
+    const { taskId } = body;
+    const { originalname, filename, size } = file;
+    return this.fileService.saveFilename(originalname, filename, size, taskId);
   }
 
   @ApiOperation({ summary: 'Download file' })
   @ApiResponse({ status: 200 })
+  @ApiParam({ name: 'taskid', description: 'Task id associated with the file' })
   @ApiParam({ name: 'filename', description: 'Filename to download' })
-  @Get('/file/:filename')
+  @Get('/file/:taskid/:filename')
   @HttpCode(HttpStatus.OK)
-  async download(@Param('filename') requestFilename: string): Promise<StreamableFile> {
-    const fileId = await this.fileService.findFileId(requestFilename);
+  async download(@Param('taskid') reqTaskId: string, @Param('filename') reqFilename: string): Promise<StreamableFile> {
+    const fileId = await this.fileService.findFileId(reqTaskId, reqFilename);
     const filepath = join(process.cwd(), `/uploads/${fileId}`);
-
     if (existsSync(filepath)) {
       const stream = createReadStream(filepath);
       return new StreamableFile(stream);

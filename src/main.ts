@@ -41,16 +41,30 @@ async function bootstrap() {
   // Validation Pipeline settings
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
+  const PORT = app.get(ConfigService).get<number>('PORT') as number;
+
   // Swagger settings
   const config = new DocumentBuilder()
     .setTitle('Kanban service')
     .setDescription('The kanban service API description')
     .setVersion('1.0')
+    .addServer(`http://localhost:${PORT}`)
+    .addBearerAuth(
+      {
+        in: 'header',
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+      },
+      'token',
+    )
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);
 
-  const PORT = app.get(ConfigService).get<number>('PORT') as number;
   await app.listen(PORT, '0.0.0.0');
 
   process.on('unhandledRejection', () => {
@@ -59,5 +73,3 @@ async function bootstrap() {
   });
 }
 bootstrap();
-
-//

@@ -11,7 +11,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 
 import { CreateTaskDto } from './dto/create-tasks.dto';
 import { UpdateTaskDto } from './dto/update-tasks.dto';
@@ -22,6 +22,7 @@ import { ITask, Task } from './tasks.entity';
 import { AuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Tasks')
+@ApiBearerAuth('token')
 @Controller('/boards/:boardId/tasks')
 @UseGuards(AuthGuard)
 export class TasksController {
@@ -52,7 +53,6 @@ export class TasksController {
   @ApiOperation({ summary: 'Create task' })
   @ApiResponse({ status: 201, type: Task })
   @ApiParam({ name: 'boardId', description: 'ID Board' })
-  @ApiParam({ name: 'taskId', description: 'ID Task' })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Param('boardId', ParseUUIDPipe) boardId: UUIDType, @Body() createTaskDto: CreateTaskDto): Promise<ITask> {

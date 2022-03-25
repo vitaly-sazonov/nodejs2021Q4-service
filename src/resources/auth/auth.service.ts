@@ -5,13 +5,13 @@ import jwt = require('jsonwebtoken');
 import bcrypt = require('bcryptjs');
 
 import { User } from '../users/users.entity';
-import { LoginUserDto } from './dto/login-user.dto';
+import { SigninUserDto } from './dto/signin-user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
-  async login(body: LoginUserDto): Promise<{ token: string }> {
+  async signin(body: SigninUserDto): Promise<{ token: string }> {
     const user = await this.usersRepository.findOne({ select: ['id', 'password'], where: { login: body.login } });
     if (!user) {
       throw new HttpException('User was not founded!', HttpStatus.FORBIDDEN);

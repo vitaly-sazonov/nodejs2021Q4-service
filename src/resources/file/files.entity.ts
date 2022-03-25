@@ -1,22 +1,25 @@
-import { BaseEntity, Entity, Unique, Column, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Entity, Unique, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Task } from '../tasks/tasks.entity';
 
 @Entity('files')
-@Unique(['filename'])
+@Unique('file_unique_constraint', ['filename', 'taskId'])
 export class File extends BaseEntity {
-  /** @public uuid record */
-
-  /** @public filename */
-  @PrimaryColumn()
+  /** @public Column filename */
+  @Column()
   filename!: string;
 
-  /** @public fileId */
-  @Column()
+  /** @public Column fileId */
+  @PrimaryColumn()
   fileId!: UUIDType;
 
+  /** @public Column fileSize */
   @Column()
   fileSize!: number;
 
-  /** @public filename */
-  @Column({ nullable: true })
+  /** @public Column taskId */
+  @Column({ nullable: false })
   taskId!: UUIDType;
+
+  @ManyToOne(() => Task, (task) => task.files, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  task!: Task;
 }

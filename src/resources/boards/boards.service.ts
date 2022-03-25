@@ -19,20 +19,10 @@ export class BoardsService {
 
   async getAll(): Promise<IBoard[]> {
     const resp = await this.boardsRepository
-
-      // .find({
-      //   select: ['id', 'title', 'columns'],
-      //   relations: ['columns'],
-      // });
       .createQueryBuilder('boards')
-      .innerJoinAndSelect('boards.columns', 'columns')
-      .select(['boards.id as id', 'boards.title as title'])
-      .addSelect(
-        'json_agg((SELECT x FROM (SELECT columns.id, columns.title, columns."order" ORDER BY columns."order" asc) AS x ) ORDER BY "order" )',
-        'columns',
-      )
-      .groupBy('boards.id')
-      .getRawMany();
+      .select(['boards.id', 'boards.title', 'columns.id', 'columns.title', 'columns.order'])
+      .leftJoin('boards.columns', 'columns')
+      .getMany();
 
     return resp;
   }
@@ -40,21 +30,10 @@ export class BoardsService {
   async getById(id: UUIDType): Promise<IBoard> {
     const board = await this.boardsRepository
       .createQueryBuilder('boards')
-      .innerJoinAndSelect('boards.columns', 'columns')
-      .select(['boards.id as id', 'boards.title as title'])
-      .addSelect(
-        'json_agg((SELECT x FROM (SELECT columns.id, columns.title, columns."order" ORDER BY columns."order" asc) AS x ) ORDER BY "order" )',
-        'columns',
-      )
-      .groupBy('boards.id')
-      .where('boards.id = :id', { id })
-      .getRawOne();
-
-    // .findOne({
-    //   select: ['id', 'title', 'columns'],
-    //   relations: ['columns'],
-    //   where: { id },
-    // });
+      .where({ id })
+      .select(['boards.id', 'boards.title', 'columns.id', 'columns.title', 'columns.order'])
+      .leftJoin('boards.columns', 'columns')
+      .getOne();
     if (!board) {
       throw new HttpException('Board was not founded!', HttpStatus.NOT_FOUND);
     }
