@@ -19,6 +19,9 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { BoardsService } from './boards.service';
 import { IBoard, Board } from './boards.entity';
 
+import getOne from './schema/controller.getOne';
+import boards404 from './schema/controller.404';
+
 import { AuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Boards')
@@ -30,6 +33,7 @@ export class BoardsController {
 
   @ApiOperation({ summary: 'Get all boards' })
   @ApiResponse({ status: 200, type: [Board] })
+  @ApiResponse(boards404)
   @Get()
   @HttpCode(HttpStatus.OK)
   getAll(): Promise<IBoard[]> {
@@ -37,7 +41,11 @@ export class BoardsController {
   }
 
   @ApiOperation({ summary: 'Get the board by id' })
-  @ApiResponse({ status: 200, type: Board })
+  @ApiResponse({
+    status: 200,
+    schema: getOne,
+  })
+  @ApiResponse(boards404)
   @ApiParam({ name: 'id', description: 'ID Board' })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -47,6 +55,7 @@ export class BoardsController {
 
   @ApiOperation({ summary: 'Create board' })
   @ApiResponse({ status: 201, type: Board })
+  @ApiResponse(boards404)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createBoardDto: CreateBoardDto): Promise<IBoard> {
@@ -55,6 +64,7 @@ export class BoardsController {
 
   @ApiOperation({ summary: 'Delete board' })
   @ApiResponse({ status: 204 })
+  @ApiResponse(boards404)
   @ApiParam({ name: 'id', description: 'ID Board' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -64,6 +74,7 @@ export class BoardsController {
 
   @ApiOperation({ summary: 'Update board' })
   @ApiResponse({ status: 200, type: Board })
+  @ApiResponse(boards404)
   @ApiParam({ name: 'id', description: 'ID Board' })
   @Put(':id')
   @HttpCode(HttpStatus.OK)

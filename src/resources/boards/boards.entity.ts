@@ -4,7 +4,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column as ColumnPg, OneToMa
 import { Task } from '../tasks/tasks.entity';
 import { Column } from '../columns/columns.entity';
 
-import { CreateNestedColumnDto } from '../columns/dto/nested-column.dto';
+import { CreateColumnDto } from '../columns/dto/create-column.dto';
 
 export interface IColumn {
   id: UUIDType;
@@ -14,7 +14,6 @@ export interface IColumn {
 export interface IBoard {
   id: UUIDType;
   title: string;
-  columns: CreateNestedColumnDto[];
 }
 
 /**
@@ -33,9 +32,8 @@ export class Board extends BaseEntity {
   title!: string;
 
   /** @public array of objects the column */
-  @ApiProperty({ type: [CreateNestedColumnDto] })
   @OneToMany(() => Column, (column) => column.board, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
-  columns!: CreateNestedColumnDto[];
+  columns!: CreateColumnDto[];
 
   @OneToMany(() => Task, (task) => task.board, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   tasks!: Task[];

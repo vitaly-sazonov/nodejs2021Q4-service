@@ -19,6 +19,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import { IUserNoId, User } from './users.entity';
 
+import status404 from './schema/controller.404';
+
 import { AuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Users')
@@ -30,6 +32,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, type: [User] })
+  @ApiResponse(status404)
   @Get()
   @HttpCode(HttpStatus.OK)
   getAll(): Promise<IUserNoId[]> {
@@ -38,6 +41,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get the user by id' })
   @ApiResponse({ status: 200, type: User })
+  @ApiResponse(status404)
   @ApiParam({ name: 'id', description: 'ID User' })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -47,6 +51,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 201, type: User })
+  @ApiResponse(status404)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUserDto: CreateUserDto): Promise<IUserNoId> {
@@ -55,6 +60,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Delete user' })
   @ApiResponse({ status: 204 })
+  @ApiResponse(status404)
   @ApiParam({ name: 'id', description: 'ID User' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -64,6 +70,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, type: User })
+  @ApiResponse(status404)
   @ApiParam({ name: 'id', description: 'ID User' })
   @Put(':id')
   @HttpCode(HttpStatus.OK)

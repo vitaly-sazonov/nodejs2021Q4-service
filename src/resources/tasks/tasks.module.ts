@@ -7,9 +7,12 @@ import { Task } from './tasks.entity';
 import { TasksService } from './tasks.service';
 import { TasksController } from './tasks.controller';
 
+import { BoardsModule } from '../boards/boards.module';
+import { ColumnsModule } from '../columns/columns.module';
+
 @Module({
   providers: [TasksService],
   controllers: [TasksController],
-  imports: [AuthModule, TypeOrmModule.forFeature([Task])],
+  imports: [AuthModule, BoardsModule, ColumnsModule, TypeOrmModule.forFeature([Task])],
 })
 export class TasksModule {}

@@ -6,16 +6,25 @@ import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-tasks.dto';
 import { UpdateTaskDto } from './dto/update-tasks.dto';
 
+import { BoardsService } from '../boards/boards.service';
+import { ColumnsService } from '../columns/columns.service';
+
 import { Task, ITask } from './tasks.entity';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectRepository(Task) private tasksRepository: Repository<Task>) {}
+  constructor(
+    @InjectRepository(Task) private tasksRepository: Repository<Task>,
+    private columnRepository: ColumnsService,
+    private boardRepository: BoardsService,
+  ) {}
 
-  async getAll(boardId: UUIDType): Promise<ITask[]> {
+  async getAll(boardId: UUIDType, columnId: UUIDType): Promise<ITask[]> {
+    this.boardRepository.isExist(boardId);
+    this.columnRepository.isExist(columnId);
     const resp = await this.tasksRepository
       .createQueryBuilder('tasks')
-      .where({ boardId })
+      .where({ boardId, columnId })
       .select([
         'tasks.id',
         'tasks.title',
@@ -32,10 +41,12 @@ export class TasksService {
     return resp;
   }
 
-  async getById(boardId: UUIDType, taskId: UUIDType): Promise<ITask> {
+  async getById(boardId: UUIDType, columnId: UUIDType, taskId: UUIDType): Promise<ITask> {
+    this.boardRepository.isExist(boardId);
+    this.columnRepository.isExist(columnId);
     const task = await this.tasksRepository
       .createQueryBuilder('tasks')
-      .where({ boardId, id: taskId })
+      .where({ boardId, columnId, id: taskId })
       .select([
         'tasks.id',
         'tasks.title',
@@ -55,21 +66,27 @@ export class TasksService {
     return task;
   }
 
-  async create(boardId: UUIDType, taskDto: CreateTaskDto): Promise<ITask> {
-    const modelTask = await this.tasksRepository.create({ ...taskDto, boardId }).save();
+  async create(boardId: UUIDType, columnId: UUIDType, taskDto: CreateTaskDto): Promise<ITask> {
+    this.boardRepository.isExist(boardId);
+    this.columnRepository.isExist(columnId);
+    const modelTask = await this.tasksRepository.create({ ...taskDto, columnId, boardId }).save();
     return modelTask;
   }
 
-  async remove(boardId: UUIDType, taskId: UUIDType): Promise<void> {
-    const task = (await this.tasksRepository.findOne({ where: { boardId, id: taskId } })) as Task;
+  async remove(boardId: UUIDType, columnId: UUIDType, taskId: UUIDType): Promise<void> {
+    this.boardRepository.isExist(boardId);
+    this.columnRepository.isExist(columnId);
+    const task = (await this.tasksRepository.findOne({ where: { boardId, columnId, id: taskId } })) as Task;
     if (!task) {
       throw new HttpException('Task was not founded!', HttpStatus.NOT_FOUND);
     }
     await task.remove();
   }
 
-  async update(boardId: UUIDType, taskId: UUIDType, body: UpdateTaskDto): Promise<ITask> {
-    const task = (await this.tasksRepository.findOne({ where: { boardId, id: taskId } })) as Task;
+  async update(boardId: UUIDType, columnId: UUIDType, taskId: UUIDType, body: UpdateTaskDto): Promise<ITask> {
+    this.boardRepository.isExist(boardId);
+    this.columnRepository.isExist(columnId);
+    const task = (await this.tasksRepository.findOne({ where: { boardId, columnId, id: taskId } })) as Task;
     if (!task) {
       throw new HttpException('Task was not founded!', HttpStatus.NOT_FOUND);
     }

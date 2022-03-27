@@ -8,22 +8,20 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 
 import { Board, IBoard } from './boards.entity';
 
-import { ColumnsService } from '../columns/columns.service';
-
 @Injectable()
 export class BoardsService {
-  constructor(
-    @InjectRepository(Board) private boardsRepository: Repository<Board>,
-    private columnsRepository: ColumnsService,
-  ) {}
+  constructor(@InjectRepository(Board) private boardsRepository: Repository<Board>) {}
+
+  async isExist(id: UUIDType) {
+    const resp = await this.boardsRepository.findOne({ where: { id } });
+    if (!resp) {
+      throw new HttpException('Board was not founded!', HttpStatus.NOT_FOUND);
+    }
+    return !!resp;
+  }
 
   async getAll(): Promise<IBoard[]> {
-    const resp = await this.boardsRepository
-      .createQueryBuilder('boards')
-      .select(['boards.id', 'boards.title', 'columns.id', 'columns.title', 'columns.order'])
-      .leftJoin('boards.columns', 'columns')
-      .getMany();
-
+    const resp = await this.boardsRepository.find();
     return resp;
   }
 
@@ -31,8 +29,23 @@ export class BoardsService {
     const board = await this.boardsRepository
       .createQueryBuilder('boards')
       .where({ id })
-      .select(['boards.id', 'boards.title', 'columns.id', 'columns.title', 'columns.order'])
+      .select([
+        'boards.id',
+        'boards.title',
+        'columns.id',
+        'columns.title',
+        'columns.order',
+        'tasks.id',
+        'tasks.title',
+        'tasks.order',
+        'tasks.description',
+        'tasks.userId',
+        'files.filename',
+        'files.fileSize',
+      ])
       .leftJoin('boards.columns', 'columns')
+      .leftJoin('columns.tasks', 'tasks')
+      .leftJoin('tasks.files', 'files')
       .getOne();
     if (!board) {
       throw new HttpException('Board was not founded!', HttpStatus.NOT_FOUND);
@@ -44,15 +57,7 @@ export class BoardsService {
     const board = new Board();
     board.title = boardDto.title;
     const modelBoard = await this.boardsRepository.save(board);
-
-    const columns = await Promise.all(
-      boardDto.columns.map(async ({ title, order }) => {
-        const column = await this.columnsRepository.create({ title, order, boardId: modelBoard.id });
-        return { id: column.id, title: column.title, order: column.order };
-      }),
-    );
-
-    return { id: modelBoard.id, title: modelBoard.title, columns };
+    return modelBoard;
   }
 
   async remove(id: UUIDType): Promise<void> {
@@ -64,7 +69,7 @@ export class BoardsService {
   }
 
   async update(id: UUIDType, body: UpdateBoardDto): Promise<IBoard> {
-    const board = (await this.boardsRepository.findOne({ relations: ['columns'], where: { id } })) as Board;
+    const board = (await this.boardsRepository.findOne({ where: { id } })) as Board;
     if (!board) {
       throw new HttpException('Board was not founded!', HttpStatus.NOT_FOUND);
     }

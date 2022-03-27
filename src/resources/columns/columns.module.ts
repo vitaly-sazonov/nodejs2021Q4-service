@@ -7,10 +7,12 @@ import { Column } from './columns.entity';
 import { ColumnsService } from './columns.service';
 import { ColumnsController } from './columns.controller';
 
+import { BoardsModule } from '../boards/boards.module';
+
 @Module({
   providers: [ColumnsService],
   controllers: [ColumnsController],
-  imports: [AuthModule, TypeOrmModule.forFeature([Column])],
+  imports: [AuthModule, BoardsModule, TypeOrmModule.forFeature([Column])],
   exports: [ColumnsService],
 })
 export class ColumnsModule {}

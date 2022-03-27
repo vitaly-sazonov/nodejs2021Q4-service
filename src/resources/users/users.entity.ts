@@ -40,7 +40,6 @@ export class User extends BaseEntity {
   login!: string;
 
   /** @public password user */
-  @ApiProperty({ example: 'userpass@123', description: 'Password user' })
   @Column()
   password!: string;
 

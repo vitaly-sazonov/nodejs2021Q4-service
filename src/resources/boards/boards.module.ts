@@ -7,11 +7,10 @@ import { Board } from './boards.entity';
 import { BoardsService } from './boards.service';
 import { BoardsController } from './boards.controller';
 
-import { ColumnsModule } from '../columns/columns.module';
-
 @Module({
   providers: [BoardsService],
   controllers: [BoardsController],
-  imports: [AuthModule, ColumnsModule, TypeOrmModule.forFeature([Board])],
+  imports: [AuthModule, TypeOrmModule.forFeature([Board])],
+  exports: [BoardsService],
 })
 export class BoardsModule {}

@@ -7,6 +7,7 @@ import {
   JoinColumn,
   OneToMany,
   ManyToOne,
+  Unique,
 } from 'typeorm';
 
 import { Column } from '../columns/columns.entity';
@@ -26,6 +27,7 @@ export interface ITask {
 }
 
 @Entity('tasks')
+@Unique('tasks_order_unique_constraint', ['order', 'id'])
 export class Task extends BaseEntity {
   /** @public record uuid */
   @ApiProperty({ example: '40af606c-c0bb-47d1-bc20-a2857242cde3', description: 'Unique task ID' })

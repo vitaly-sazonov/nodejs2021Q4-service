@@ -1,12 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber, ValidateIf, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, ValidateIf, IsOptional } from 'class-validator';
 
 export class UpdateTaskDto {
-  @ApiProperty({ example: '40af606c-c0bb-47d1-bc20-a2857242cde3', description: 'ID Task' })
-  @IsUUID()
-  @IsNotEmpty()
-  readonly id!: UUIDType;
-
   @ApiProperty({ example: 'Task: pet the cat', description: 'Task title' })
   @IsString()
   @IsNotEmpty()
