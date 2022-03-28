@@ -49,15 +49,6 @@ export class UsersController {
     return this.userService.getById(id);
   }
 
-  @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: 201, type: User })
-  @ApiResponse(status404)
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  create(@Body() createUserDto: CreateUserDto): Promise<IUserNoId> {
-    return this.userService.create(createUserDto);
-  }
-
   @ApiOperation({ summary: 'Delete user' })
   @ApiResponse({ status: 204 })
   @ApiResponse(status404)

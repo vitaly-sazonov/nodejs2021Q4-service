@@ -34,7 +34,6 @@ docker-compose up
 
   - `GET /users` - get all users
   - `GET /users/:userId` - get the user by id (ex. “/users/123”)
-  - `POST /users` - create user
   - `PUT /users/:userId` - update user
   - `DELETE /users/:userId` - delete user
 
