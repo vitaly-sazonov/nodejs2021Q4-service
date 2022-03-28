@@ -7,14 +7,9 @@
 
 ## Downloading
 
-```
-git clone {repository URL}
-```
-
-## Installing NPM modules
-
-```
-npm ci
+```bash
+$user: git clone {repository URL}
+$user: cd nodejs2021Q4-service
 ```
 
 ## Run Docker

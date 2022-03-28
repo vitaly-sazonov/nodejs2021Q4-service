@@ -13506,3 +13506,36 @@
 {"level":30,"time":1648465762967,"pid":53,"hostname":"e91f68969308","msg":"Mapped {/file, POST} route"}
 {"level":30,"time":1648465762968,"pid":53,"hostname":"e91f68969308","msg":"Mapped {/file/:taskid/:filename, GET} route"}
 {"level":30,"time":1648465762977,"pid":53,"hostname":"e91f68969308","msg":"Nest application successfully started"}
+{"level":30,"time":1648465984532,"pid":53,"hostname":"35e1bdcbbaf5","msg":"AppController {/}:"}
+{"level":30,"time":1648465984541,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/, GET} route"}
+{"level":30,"time":1648465984541,"pid":53,"hostname":"35e1bdcbbaf5","msg":"UsersController {/users}:"}
+{"level":30,"time":1648465984543,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/users, GET} route"}
+{"level":30,"time":1648465984544,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/users/:id, GET} route"}
+{"level":30,"time":1648465984545,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/users, POST} route"}
+{"level":30,"time":1648465984546,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/users/:id, DELETE} route"}
+{"level":30,"time":1648465984548,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/users/:id, PUT} route"}
+{"level":30,"time":1648465984549,"pid":53,"hostname":"35e1bdcbbaf5","msg":"AuthController {/}:"}
+{"level":30,"time":1648465984550,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/signin, POST} route"}
+{"level":30,"time":1648465984551,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/signup, POST} route"}
+{"level":30,"time":1648465984552,"pid":53,"hostname":"35e1bdcbbaf5","msg":"BoardsController {/boards}:"}
+{"level":30,"time":1648465984555,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards, GET} route"}
+{"level":30,"time":1648465984557,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:id, GET} route"}
+{"level":30,"time":1648465984557,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards, POST} route"}
+{"level":30,"time":1648465984558,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:id, DELETE} route"}
+{"level":30,"time":1648465984559,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:id, PUT} route"}
+{"level":30,"time":1648465984559,"pid":53,"hostname":"35e1bdcbbaf5","msg":"ColumnsController {/boards/:boardId/columns}:"}
+{"level":30,"time":1648465984560,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns, GET} route"}
+{"level":30,"time":1648465984560,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId, GET} route"}
+{"level":30,"time":1648465984561,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns, POST} route"}
+{"level":30,"time":1648465984562,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId, DELETE} route"}
+{"level":30,"time":1648465984562,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId, PUT} route"}
+{"level":30,"time":1648465984562,"pid":53,"hostname":"35e1bdcbbaf5","msg":"TasksController {/boards/:boardId/columns/:columnId/tasks}:"}
+{"level":30,"time":1648465984563,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId/tasks, GET} route"}
+{"level":30,"time":1648465984564,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId/tasks/:taskId, GET} route"}
+{"level":30,"time":1648465984564,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId/tasks, POST} route"}
+{"level":30,"time":1648465984565,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId/tasks/:taskId, DELETE} route"}
+{"level":30,"time":1648465984566,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/boards/:boardId/columns/:columnId/tasks/:taskId, PUT} route"}
+{"level":30,"time":1648465984566,"pid":53,"hostname":"35e1bdcbbaf5","msg":"FileController {/}:"}
+{"level":30,"time":1648465984567,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/file, POST} route"}
+{"level":30,"time":1648465984568,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Mapped {/file/:taskid/:filename, GET} route"}
+{"level":30,"time":1648465984577,"pid":53,"hostname":"35e1bdcbbaf5","msg":"Nest application successfully started"}
