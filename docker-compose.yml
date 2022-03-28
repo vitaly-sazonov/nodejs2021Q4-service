@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   web:
-    build: .
+    build: ./backend/
     depends_on:
       - db
     container_name: web
@@ -11,16 +11,16 @@ services:
       - ${PORT}:${PORT}
     # restart: always
     volumes:
-      - ./migrations:/home/app/migrations
-      - ./src:/home/app/src
-      - ./logs:/home/app/logs
-      - ./uploads:/home/app/uploads
-      - ./typings:/home/app/typings
+      - ./backend/migrations:/home/app/migrations
+      - ./backend/src:/home/app/src
+      - ./backend/logs:/home/app/logs
+      - ./backend/uploads:/home/app/uploads
+      - ./backend/typings:/home/app/typings
     networks:
       - app-network
     command: sh -c "npm run typeorm:migration && npm run start:dev"
   db:
-    build: ./db/
+    build: ./backend/db/
     container_name: db
     env_file: .env
     environment:
